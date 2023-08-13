@@ -99,7 +99,7 @@ def main():
     panel.pack(padx=20, pady=20)
 
     labels = ["Prefix Bound", "Suffix Bound", "Zoom X", "Zoom width", "Zoom Y", "Zoom height"]
-    init_vals = [0.797817, 0.797833, 0.6, 0.05, 0.8, 0.05]
+    init_vals = [0.797824, 0.797829, 0.6, 0.05, 0.8, 0.05]
     configs = []
 
     for label_text in labels:
