@@ -7,7 +7,7 @@ from PIL import Image, ImageTk
 
 def open_image():
     global hex_values
-    file_path = filedialog.askopenfilename(filetypes=[("Image files", "*.jpg *.jpeg")])
+    file_path = filedialog.askopenfilename(filetypes=[("Image files", "*.jpg *.jpeg *.JPEG *.JPG")])
     
     if file_path:
         with open(file_path, 'rb') as f:
@@ -27,9 +27,8 @@ def update_image_display():
         with open("edited_image.jpg", "wb") as f:
             f.write(image_data)
             f.close()
-        updated_image = Image.open("edited_image.jpg")
-        
-        updated_photo = ImageTk.PhotoImage(updated_image)
+        updated_image = Image.open("edited_image.jpg").resize((800, 800))
+        updated_photo = ImageTk.PhotoImage(updated_image, width=800)
         image_label.configure(image=updated_photo)
         image_label.image = updated_photo
     except ValueError:
@@ -55,13 +54,18 @@ def main():
 
     #hex_text.bind("<KeyRelease>", update_image_display)
     
-    image_frame = tk.Frame(root)
+    scroll_bar.config(command=hex_text.yview)
+    
+    img_root = tk.Toplevel()
+    img_root.title("Image Preview")
+    img_root.geometry("800x800")
+
+    image_frame = tk.Frame(img_root)
     image_frame.pack()
 
     image_label = tk.Label(image_frame)
     image_label.pack()
 
-    scroll_bar.config(command=hex_text.yview)
     root.mainloop()
 
 if __name__ == "__main__":
