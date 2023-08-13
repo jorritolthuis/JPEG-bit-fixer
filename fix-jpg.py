@@ -7,22 +7,25 @@ from PIL import Image, ImageTk
 
 def open_image():
     global hex_values
+    global prefix, suffix, prefix_bound, suffix_bound
     file_path = filedialog.askopenfilename(filetypes=[("Image files", "*.jpg *.jpeg *.JPEG *.JPG")])
     
     if file_path:
         with open(file_path, 'rb') as f:
             hex_values = f.read().hex().upper()
+            prefix = hex_values[:int(len(hex_values) * prefix_bound)]
+            suffix = hex_values[int(len(hex_values) * suffix_bound):]
             hex_text.delete('1.0', tk.END)
-            hex_text.insert('1.0', hex_values)
+            hex_text.insert('1.0', hex_values[int(len(hex_values) * prefix_bound): int(len(hex_values) * suffix_bound)])
     print("Image hex has been loaded")
 
 def update_image_display():
     print("Rendering...")
-    global hex_values, image_label
+    global hex_values, image_label, prefix, suffix
     hex_values = hex_text.get('1.0', tk.END).replace('\n', '').strip()
     
     try:
-        image_data = bytes.fromhex(hex_values)
+        image_data = bytes.fromhex([prefix, hex_values, suffix])
         image_data = bytearray(image_data)
         with open("edited_image.jpg", "wb") as f:
             f.write(image_data)
@@ -37,6 +40,13 @@ def update_image_display():
 
 def main():
     global hex_text, image_label
+    global prefix, suffix
+    global prefix_bound, suffix_bound
+
+    # Reduces the number of bytes displayed in the text area, increasing performance
+    prefix_bound = 0.8
+    suffix_bound = 0.95
+
     root = tk.Tk()
     root.title("Hex Image Editor")
 
