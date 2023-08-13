@@ -3,6 +3,7 @@
 
 import tkinter as tk
 from tkinter import filedialog
+from PIL import Image, ImageTk
 
 def open_image():
     global hex_values
@@ -17,7 +18,7 @@ def open_image():
 
 def update_image_display():
     print("Rendering...")
-    global hex_values
+    global hex_values, image_label
     hex_values = hex_text.get('1.0', tk.END).replace('\n', '').strip()
     
     try:
@@ -26,12 +27,17 @@ def update_image_display():
         with open("edited_image.jpg", "wb") as f:
             f.write(image_data)
             f.close()
+        updated_image = Image.open("edited_image.jpg")
+        
+        updated_photo = ImageTk.PhotoImage(updated_image)
+        image_label.configure(image=updated_photo)
+        image_label.image = updated_photo
     except ValueError:
         pass
     print("done.")
 
 def main():
-    global hex_text
+    global hex_text, image_label
     root = tk.Tk()
     root.title("Hex Image Editor")
 
@@ -48,6 +54,12 @@ def main():
     hex_text.pack()
 
     #hex_text.bind("<KeyRelease>", update_image_display)
+    
+    image_frame = tk.Frame(root)
+    image_frame.pack()
+
+    image_label = tk.Label(image_frame)
+    image_label.pack()
 
     scroll_bar.config(command=hex_text.yview)
     root.mainloop()
